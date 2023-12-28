@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const { newsUrl } = require('./constants');
 const News = require('../models/news');
 
-async function scrapeNews() {
+async function scrapeNews(res) {
   const browser = await puppeteer.launch({ headless: 'new' });
   const page = await browser.newPage();
 
@@ -64,15 +64,10 @@ async function scrapeNews() {
   }
 
   await browser.close();
+  console.log("Returning scraped product");
   return allNews;
 }
 
 module.exports = {
   scrapeNews,
 };
-
-// Example usage: node controllers/scrapeController
-(async () => {
-  const newsData = await scrapeNews();
-  console.log(JSON.stringify(newsData, null, 2)); // Print the JSON formatted news data
-})();

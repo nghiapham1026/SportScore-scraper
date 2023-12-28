@@ -1,4 +1,4 @@
-const newsUrl = 'https://www.aljazeera.com/tag/football';
+const newsUrl = 'https://www.goal.com/en-us';
 
 module.exports = {
   newsUrl,

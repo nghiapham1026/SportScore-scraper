@@ -3,7 +3,7 @@ const { newsUrl } = require('./constants');
 const News = require('../models/news');
 
 async function scrapeNews() {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
 
     try {
@@ -33,33 +33,35 @@ async function scrapeNews() {
             await page.goto(link, { waitUntil: 'networkidle2', timeout: 45000 });
             console.log(`Processing: ${link}`);
 
-            // Wait for a fixed time after navigation to ensure page content loads
-            await page.waitForTimeout(5000); 
+            await page.waitForTimeout(5000); // Wait for content to load
 
             const articleDetails = await page.evaluate(() => {
                 const name = document.querySelector('h1.article_title__9p8Mp')?.innerText;
                 const author = document.querySelector('.author-link_authors__7vfIl a')?.innerText || 'Unknown';
                 const date = document.querySelector('time[datetime]')?.getAttribute('datetime');
-                const body = document.querySelector('.article-body_body__ASOmp')?.innerText;
+
+                // Fetch all paragraphs or text elements within the article body
+                const bodyElements = Array.from(document.querySelectorAll('.article-body_body__ASOmp p'));
+                const body = bodyElements.map(p => p.innerText).join('\n\n');
+
                 return { name, author, date, body };
             });
 
             allNews.push(new News(articleDetails));
         } catch (error) {
             console.error(`Error scraping article at ${link}: ${error.message}`);
-            // If an error occurs, continue with the next article
         }
     }
 
     await browser.close();
-    return allNews; // This returns the scraped data as a JSON array
+    return allNews;
 }
 
 module.exports = {
     scrapeNews,
 };
 
-// Example usage
+// Example usage: node controllers/scrapeController
 (async () => {
     const newsData = await scrapeNews();
     console.log(JSON.stringify(newsData, null, 2)); // Print the JSON formatted news data

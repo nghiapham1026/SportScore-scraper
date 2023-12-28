@@ -8,57 +8,59 @@ exports.createNews = (req, res) => {
     name: req.body.name,
     author: req.body.author,
     date: req.body.date,
-    body: req.body.body
+    body: req.body.body,
   });
 
   // Save the news data to the database
-  news.save()
-    .then(result => {
+  news
+    .save()
+    .then((result) => {
       res.status(201).json({
-        message: "News added successfully",
+        message: 'News added successfully',
         news: {
           ...result._doc,
-          id: result._id
-        }
+          id: result._id,
+        },
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({
-        message: "Failed to create news article"
+        message: 'Failed to create news article',
+        error: err.message,
       });
     });
 };
 
 exports.fetchNews = async (_, res) => {
-    try {
-        // Use the scrapeNews function to fetch news data
-        const scrapedNews = await webScrape.scrapeNews();
+  try {
+    // Use the scrapeNews function to fetch news data
+    const scrapedNews = await webScrape.scrapeNews();
 
-        // Process and save each news article to the database
-        const savedArticles = await Promise.all(
-            scrapedNews.map(article => {
-                const news = new NewsData({
-                    name: article.name,
-                    author: article.author,
-                    date: article.date,
-                    body: article.body
-                });
-                return news.save();
-            })
-        );
+    // Process and save each news article to the database
+    const savedArticles = await Promise.all(
+      scrapedNews.map((article) => {
+        const news = new NewsData({
+          name: article.name,
+          author: article.author,
+          date: article.date,
+          body: article.body,
+        });
+        return news.save();
+      })
+    );
 
-        // Respond with the saved articles
-        res.status(201).json({
-            message: "News articles fetched and saved successfully",
-            savedArticles: savedArticles.map(article => ({
-                ...article._doc,
-                id: article._id
-            }))
-        });
-    } catch (err) {
-        res.status(500).json({
-            message: "Failed to fetch and create news articles",
-            error: err.message
-        });
-    }
+    // Respond with the saved articles
+    res.status(201).json({
+      message: 'News articles fetched and saved successfully',
+      savedArticles: savedArticles.map((article) => ({
+        ...article._doc,
+        id: article._id,
+      })),
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: 'Failed to fetch and create news articles',
+      error: err.message,
+    });
+  }
 };

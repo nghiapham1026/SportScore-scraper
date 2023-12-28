@@ -1,9 +1,9 @@
-const express = require("express");
-require("dotenv").config();
+const express = require('express');
+require('dotenv').config();
 const app = express();
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const newsRoutes = require("./routes/news.js");
+const newsRoutes = require('./routes/news.js');
 
 main()
   .then((res) => console.log(res))
@@ -14,13 +14,13 @@ async function main() {
 }
 
 app.get('/', (_, res) => {
-    res.send('SportScore news scraper https://www.goal.com/en-us');
+  res.send('SportScore news scraper https://www.goal.com/en-us');
 });
 
 app.use(express.json());
-app.use("/news", newsRoutes);
+app.use('/news', newsRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

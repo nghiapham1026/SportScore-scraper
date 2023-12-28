@@ -14,11 +14,11 @@ async function main() {
 }
 
 app.get('/', (_, res) => {
-    res.send('SportScore news scraper https://www.aljazeera.com/tag/football/');
+    res.send('SportScore news scraper https://www.goal.com/en-us');
 });
 
 app.use(express.json());
-app.use("/api/news", newsRoutes);
+app.use("/news", newsRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

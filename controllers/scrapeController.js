@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const { newsUrl } = require('./constants');
 const News = require('../models/news');
 
-async function scrapeNews(res) {
+async function scrapeNews() {
   const browser = await puppeteer.launch({ headless: 'new' });
   const page = await browser.newPage();
 
@@ -47,14 +47,19 @@ async function scrapeNews(res) {
         const date = document
           .querySelector('time[datetime]')
           ?.getAttribute('datetime');
-
-        // Fetch all paragraphs or text elements within the article body
-        const bodyElements = Array.from(
+        const body = Array.from(
           document.querySelectorAll('.article-body_body__ASOmp p')
-        );
-        const body = bodyElements.map((p) => p.innerText).join('\n\n');
+        )
+          .map((p) => p.innerText)
+          .join('\n\n');
 
-        return { name, author, date, body };
+        // Scrape the first image link
+        const imageElement = document.querySelector(
+          '.article_poster__96vwU img'
+        );
+        const image = imageElement ? imageElement.src : null;
+
+        return { name, author, date, body, image };
       });
 
       allNews.push(new News(articleDetails));
@@ -64,7 +69,6 @@ async function scrapeNews(res) {
   }
 
   await browser.close();
-  console.log("Returning scraped product");
   return allNews;
 }
 

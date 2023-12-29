@@ -10,6 +10,10 @@ const newsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    link: {
+      type: String,
+      required: true,
+    },
     date: {
       type: String, // Assuming the date is in ISO string format
       required: true,

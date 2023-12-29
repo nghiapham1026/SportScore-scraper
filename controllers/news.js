@@ -10,7 +10,8 @@ exports.createNews = (req, res) => {
     date: req.body.date,
     body: req.body.body,
     image: article.image,
-    topics: req.body.topics
+    topics: req.body.topics,
+    link: req.body.link
   });
 
   // Save the news data to the database
@@ -65,7 +66,8 @@ exports.saveNews = async (_, res) => {
           date: article.date,
           body: article.body,
           image: article.image,
-          topics: req.body.topics
+          topics: req.body.topics,
+          link: req.body.link
         });
         return news.save();
       })

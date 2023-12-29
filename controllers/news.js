@@ -48,3 +48,71 @@ exports.fetchNews = async (_, res) => {
     });
   }
 };
+
+exports.saveNews = async (_, res) => {
+    try {
+      // Call scrapeNews to get scraped news data
+      const scrapedNews = await webScrape.scrapeNews();
+  
+      // Process and save each news article to the database
+      const savedArticles = await Promise.all(
+        scrapedNews.map(article => {
+          const news = new NewsData({
+            name: article.name,
+            author: article.author,
+            date: article.date,
+            body: article.body
+          });
+          return news.save();
+        })
+      );
+  
+      // Respond with the saved articles
+      res.status(201).json({
+        message: 'News articles fetched and saved successfully',
+        savedArticles: savedArticles.map(article => ({
+          ...article._doc,
+          id: article._id
+        }))
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: 'Failed to fetch and save news articles',
+        error: err.message
+      });
+    }
+  };
+
+  exports.saveNews = async (_, res) => {
+    try {
+      // Call scrapeNews to get scraped news data
+      const scrapedNews = await webScrape.scrapeNews();
+  
+      // Process and save each news article to the database
+      const savedArticles = await Promise.all(
+        scrapedNews.map(article => {
+          const news = new NewsData({
+            name: article.name,
+            author: article.author,
+            date: article.date,
+            body: article.body
+          });
+          return news.save();
+        })
+      );
+  
+      // Respond with the saved articles
+      res.status(201).json({
+        message: 'News articles fetched and saved successfully',
+        savedArticles: savedArticles.map(article => ({
+          ...article._doc,
+          id: article._id
+        }))
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: 'Failed to fetch and save news articles',
+        error: err.message
+      });
+    }
+  };

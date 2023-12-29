@@ -9,7 +9,7 @@ exports.createNews = (req, res) => {
     author: req.body.author,
     date: req.body.date,
     body: req.body.body,
-    image: article.image,
+    image: req.body.image,
     topics: req.body.topics,
     link: req.body.link
   });
@@ -66,8 +66,8 @@ exports.saveNews = async (_, res) => {
           date: article.date,
           body: article.body,
           image: article.image,
-          topics: req.body.topics,
-          link: req.body.link
+          topics: article.topics,
+          link: article.link
         });
         return news.save();
       })

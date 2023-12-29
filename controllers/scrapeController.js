@@ -5,6 +5,7 @@ const News = require('../models/news');
 async function scrapeNews() {
   const browser = await puppeteer.launch({ headless: 'new' });
   const page = await browser.newPage();
+  let scrapedArticleCount = 0;
 
   try {
     await page.goto(newsUrl, { waitUntil: 'networkidle2', timeout: 45000 });
@@ -18,7 +19,7 @@ async function scrapeNews() {
   try {
     articles = await page.$$eval(
       'li.item[data-testid="article-card"]',
-      items => items.slice(0, 1).map(item => item.querySelector('a[href]').href)
+      items => items.map(item => item.querySelector('a[href]').href)
     );
   } catch (error) {
     console.error(`Error extracting article links: ${error.message}`);
@@ -30,6 +31,15 @@ async function scrapeNews() {
 
   const allNews = [];
   for (const link of articles) {
+    if (scrapedArticleCount >= 5) break; // Limit to 5 articles
+
+    // Check if article already exists in the database
+    const existingArticle = await News.findOne({ link: link });
+    if (existingArticle) {
+      console.log(`Article already exists: ${link}`);
+      continue; // Skip this article
+    }
+
     try {
       await page.goto(link, { waitUntil: 'networkidle2', timeout: 45000 });
       console.log(`Processing: ${link}`);
@@ -52,12 +62,14 @@ async function scrapeNews() {
       }, link);
 
       allNews.push(new News(articleDetails));
+      scrapedArticleCount++;
     } catch (error) {
       console.error(`Error scraping article at ${link}: ${error.message}`);
     }
   }
 
   await browser.close();
+  console.log("Returning Scraped Product");
   return allNews;
 }
 

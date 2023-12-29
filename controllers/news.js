@@ -9,6 +9,8 @@ exports.createNews = (req, res) => {
     author: req.body.author,
     date: req.body.date,
     body: req.body.body,
+    image: article.image,
+    topics: req.body.topics
   });
 
   // Save the news data to the database
@@ -63,43 +65,13 @@ exports.saveNews = async (_, res) => {
           date: article.date,
           body: article.body,
           image: article.image,
+          topics: req.body.topics
         });
         return news.save();
       })
     );
 
     // Respond with the saved articles
-    res.status(201).json({
-      message: 'News articles fetched and saved successfully',
-      savedArticles: savedArticles.map((article) => ({
-        ...article._doc,
-        id: article._id,
-      })),
-    });
-  } catch (err) {
-    res.status(500).json({
-      message: 'Failed to fetch and save news articles',
-      error: err.message,
-    });
-  }
-};
-
-exports.saveNews = async (_, res) => {
-  try {
-    const scrapedNews = await webScrape.scrapeNews();
-    const savedArticles = await Promise.all(
-      scrapedNews.map((article) => {
-        const news = new NewsData({
-          name: article.name,
-          author: article.author,
-          date: article.date,
-          body: article.body,
-          image: article.image, // Assuming `image` is part of the scraped data
-        });
-        return news.save();
-      })
-    );
-
     res.status(201).json({
       message: 'News articles fetched and saved successfully',
       savedArticles: savedArticles.map((article) => ({

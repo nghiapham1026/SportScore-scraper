@@ -18,8 +18,7 @@ async function scrapeNews() {
   try {
     articles = await page.$$eval(
       'li.item[data-testid="article-card"]',
-      (items) =>
-        items.slice(0, 5).map((item) => item.querySelector('a[href]').href)
+      items => items.slice(0, 5).map(item => item.querySelector('a[href]').href)
     );
   } catch (error) {
     console.error(`Error extracting article links: ${error.message}`);
@@ -38,28 +37,18 @@ async function scrapeNews() {
       await page.waitForTimeout(5000); // Wait for content to load
 
       const articleDetails = await page.evaluate(() => {
-        const name = document.querySelector(
-          'h1.article_title__9p8Mp'
-        )?.innerText;
-        const author =
-          document.querySelector('.author-link_authors__7vfIl a')?.innerText ||
-          'Unknown';
-        const date = document
-          .querySelector('time[datetime]')
-          ?.getAttribute('datetime');
-        const body = Array.from(
-          document.querySelectorAll('.article-body_body__ASOmp p')
-        )
-          .map((p) => p.innerText)
-          .join('\n\n');
-
-        // Scrape the first image link
-        const imageElement = document.querySelector(
-          '.article_poster__96vwU img'
-        );
+        const name = document.querySelector('h1.article_title__9p8Mp')?.innerText;
+        const author = document.querySelector('.author-link_authors__7vfIl a')?.innerText || 'Unknown';
+        const date = document.querySelector('time[datetime]')?.getAttribute('datetime');
+        const body = Array.from(document.querySelectorAll('.article-body_body__ASOmp p')).map(p => p.innerText).join('\n\n');
+        const imageElement = document.querySelector('.article_poster__96vwU img');
         const image = imageElement ? imageElement.src : null;
 
-        return { name, author, date, body, image };
+        // Scrape all topics
+        const topicElements = document.querySelectorAll('.tag-list_list__JJGGX .tag_tag__bj3Yq');
+        const topics = Array.from(topicElements).map(element => element.textContent.trim());
+
+        return { name, author, date, body, image, topics };
       });
 
       allNews.push(new News(articleDetails));

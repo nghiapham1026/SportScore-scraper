@@ -19,10 +19,13 @@ const newsSchema = new mongoose.Schema(
       required: true,
     },
     image: {
-      // New field for image link
       type: String,
       required: false, // Set to false if the image is not mandatory
     },
+    topics: { // New field for topics
+      type: [String], // Array of strings
+      required: false, // Set to false if the topics are not mandatory
+    }
   },
   { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } }
 ); // Enable timestamps

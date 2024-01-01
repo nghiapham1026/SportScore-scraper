@@ -3,7 +3,10 @@ const { newsUrl } = require('./constants');
 const News = require('../models/news');
 
 async function scrapeNews() {
-  const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        executablePath: process.env.CHROME_BIN || '/app/.apt/usr/bin/google-chrome-stable'
+      });      
   const page = await browser.newPage();
   let scrapedArticleCount = 0;
 

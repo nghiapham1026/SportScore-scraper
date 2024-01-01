@@ -31,7 +31,7 @@ async function scrapeNews() {
 
   const allNews = [];
   for (const link of articles) {
-    if (scrapedArticleCount >= 5) break; // Limit to 5 articles
+    if (scrapedArticleCount >= 3) break; // Limit to 5 articles
 
     // Check if article already exists in the database
     const existingArticle = await News.findOne({ link });

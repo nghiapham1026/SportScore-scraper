@@ -24,12 +24,13 @@ const newsSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: false, // Set to false if the image is not mandatory
+      required: true, // Set to false if the image is not mandatory
     },
-    topics: { // New field for topics
+    topics: {
+      // New field for topics
       type: [String], // Array of strings
-      required: false, // Set to false if the topics are not mandatory
-    }
+      required: true, // Set to false if the topics are not mandatory
+    },
   },
   { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } }
 ); // Enable timestamps

@@ -11,7 +11,7 @@ exports.createNews = (req, res) => {
     body: req.body.body,
     image: req.body.image,
     topics: req.body.topics,
-    link: req.body.link
+    link: req.body.link,
   });
 
   // Save the news data to the database
@@ -67,7 +67,7 @@ exports.saveNews = async (_, res) => {
           body: article.body,
           image: article.image,
           topics: article.topics,
-          link: article.link
+          link: article.link,
         });
         return news.save();
       })
